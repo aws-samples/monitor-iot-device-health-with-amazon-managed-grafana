@@ -1,0 +1,12 @@
+{
+    "device0":{"equipmentid":"1234", "customerid":"abcd"},
+    "device1":{"equipmentid":"4321", "customerid":"dabc"},
+    "device2":{"equipmentid":"5678", "customerid":"fade"},
+    "device3":{"equipmentid":"1234", "customerid":"abcd"},
+    "device4":{"equipmentid":"4321", "customerid":"dabc"},
+    "device5":{"equipmentid":"5678", "customerid":"fade"},
+    "device6":{"equipmentid":"1234", "customerid":"abcd"},
+    "device7":{"equipmentid":"4321", "customerid":"dabc"},
+    "device8":{"equipmentid":"5678", "customerid":"fade"},
+    "device9":{"equipmentid":"5678", "customerid":"fade"}
+}

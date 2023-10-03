@@ -1,0 +1,49 @@
+{
+    "name": "sample-telemetry-payload",
+    "topic": "sampledevice/data",
+        "payload": [
+         {
+            "name": "deviceid",
+            "arr": ["device1","device2","device3","device4","device5","device6","device7","device8","device9","device0"],
+          "type": "pickOne",
+          "static": false            
+         },
+            {
+          "name": "timestamp",
+          "tsformat": "unix",
+          "type": "timestamp"
+         },
+         {
+            "name": "temperature",
+            "max": 200,
+          "min": 0,
+          "type": "int"
+         },
+         {
+            "name": "fuel_level",
+            "max": 200,
+          "min": 0,
+          "type": "decay"
+         },
+         {
+            "name": "battery_level",
+            "max": 100,
+          "min": 0,
+          "type": "decay"
+         },
+         {
+            "name": "signal_strength",
+            "max": -40,
+          "min": -80,
+          "type": "float",
+          "precision": 0.01
+         },
+         {
+            "name": "location",
+            "type": "location",
+            "radius": 1000000,
+            "lat": 34,
+            "long": -84
+          }
+        ]
+   }

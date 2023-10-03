@@ -1,0 +1,10 @@
+.DS_Store
+cdk.out/
+misag.yaml
+cloudformation.yaml
+cdkstack/__pycache__/
+ash_cf2cdk_output/
+aws cloudformation create-stack --stack-.txt
+.vscode
+.venv
+

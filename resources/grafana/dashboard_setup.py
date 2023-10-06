@@ -22,6 +22,9 @@ import os
 import urllib3
 import uuid
 
+# get runtime region
+runtime_region = os.environ['AWS_REGION']
+
 # create grafana api key with boto
 # returns API key
 def create_grafana_api_key(workspace_id):
@@ -45,7 +48,7 @@ def create_timestream_data_source(workspace_id, http):
     table_name = os.environ['TimestreamTable']
     
     # check if data source already exists
-    api_url = "https://"+workspace_id+".grafana-workspace.us-east-1.amazonaws.com/api/datasources"
+    api_url = f"https://{workspace_id}.grafana-workspace.{runtime_region}.amazonaws.com/api/datasources"
     result = http.request('GET', api_url)
     data = json.loads(result.data.decode('utf-8'))
 
@@ -57,25 +60,25 @@ def create_timestream_data_source(workspace_id, http):
 
 
     # otherwise, create data source
-    api_url = "https://"+workspace_id+".grafana-workspace.us-east-1.amazonaws.com/api/datasources"
+    api_url = f"https://{workspace_id}.grafana-workspace.{runtime_region}.amazonaws.com/api/datasources"
     payload = {
         "orgId": 1,
-        "name": "Amazon Timestream us-east-1"  + str(uuid.uuid4()),
+        "name": "Amazon Timestream "+runtime_region  + str(uuid.uuid4()),
         "type": "grafana-timestream-datasource",
         "typeName": "Amazon Timestream",
         "typeLogoUrl": "public/plugins/grafana-timestream-datasource/img/timestream.svg",
         "access": "proxy",
         "url": "",
         "user": "",
-        "database": '"'+database_name+'"',
+        "database": database_name,
         "basicAuth": False,
         "isDefault": False,
         "jsonData": {
             "authType": "ec2_iam_role",
-            "defaultDatabase": '"'+database_name+'"',
+            "defaultDatabase": database_name,
             "defaultMeasure": "",
-            "defaultRegion": "us-east-1",
-            "defaultTable": '"'+table_name+'"'
+            "defaultRegion": runtime_region,
+            "defaultTable": table_name
         },
         "readOnly": False
     } 
@@ -88,7 +91,7 @@ def create_timestream_data_source(workspace_id, http):
 def create_timestream_dashboard(workspace_id, http, datasource_uid):
 
     # search for grafana dashboard matching name
-    api_url = "https://"+workspace_id+".grafana-workspace.us-east-1.amazonaws.com/api/search?tag="+datasource_uid
+    api_url = f"https://{workspace_id}.grafana-workspace.{runtime_region}.amazonaws.com/api/search?tag={datasource_uid}"
     result = http.request('GET', api_url)
     data = json.loads(result.data.decode('utf-8'))
     
@@ -97,7 +100,7 @@ def create_timestream_dashboard(workspace_id, http, datasource_uid):
         if item['title'] == "IoT Device Dashboard":
             return item['url']
 
-    api_url = "https://"+workspace_id+".grafana-workspace.us-east-1.amazonaws.com/api/dashboards/db"
+    api_url = f"https://{workspace_id}.grafana-workspace.{runtime_region}.amazonaws.com/api/dashboards/db"
 
     database_name = os.environ['TimestreamDatabase']
 

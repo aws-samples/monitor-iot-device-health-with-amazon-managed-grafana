@@ -101,6 +101,7 @@ class monitor_iot_with_grafana(Stack):
             authentication_providers=["AWS_SSO", "SAML"],
             permission_type="SERVICE_MANAGED",
             name="IoT-Health-Workspace",
+            plugin_admin_enabled=True,
             role_arn=grafana_iot_health_workspace_role.role_arn
         )
         grafana_iot_health_workspace.apply_removal_policy(
@@ -169,6 +170,13 @@ class monitor_iot_with_grafana(Stack):
                                                              role=process_telemetry_lambda_role
                                                             #  log_retention=logs.RetentionDays.ONE_DAY
                                                              )
+        
+        NagSuppressions.add_resource_suppressions(process_telemetry_lambda_function,
+                                                  [{
+                                                      "id": "AwsSolutions-L1",
+                                                      "reason": "Function has been validated with Python 3.11"
+                                                    }]
+                                                    )
 
         ### add permissions for timestream to lambda function ###
         lambda_timestream_policy = iam.Policy(self, "lambda-timestream-policy",
@@ -209,6 +217,7 @@ class monitor_iot_with_grafana(Stack):
         initialize_grafana_dashboard = triggers.TriggerFunction(self, "InitializeGrafanaDashboard",
                                                                 handler="dashboard_setup.lambda_handler",
                                                                 runtime=_lambda.Runtime.PYTHON_3_11,
+                                                                timeout=cdk.Duration.seconds(20),
                                                                 code=_lambda.Code.from_asset(
                                                                     "resources/grafana"),
                                                                 description="initialize grafana workspace",
@@ -220,8 +229,16 @@ class monitor_iot_with_grafana(Stack):
                                                                 role=initialize_grafana_lambda_role
                                                                 # log_retention=logs.RetentionDays.ONE_DAY
                                                                 )
+                                                                
         initialize_grafana_dashboard.apply_removal_policy(
             cdk.RemovalPolicy.DESTROY)
+
+        NagSuppressions.add_resource_suppressions(initialize_grafana_dashboard,
+                                                  [{
+                                                      "id": "AwsSolutions-L1",
+                                                      "reason": "Function has been validated with Python 3.11"
+                                                    }]
+                                                    )
 
         ### create arn for grafana workspace ###
         grafana_workspace_arn = Stack.of(self).format_arn(

@@ -57,7 +57,10 @@ def create_timestream_data_source(workspace_id, http):
         if item['database'] == '"'+database_name+'"':
             return item['uid']
 
-
+    # make sure to load the plugin
+    plugin_api_url = f"https://{workspace_id}.grafana-workspace.{runtime_region}.amazonaws.com/api/plugins/grafana-timestream-datasource/install"
+    install_result = http.request('POST', plugin_api_url, body={})
+    print(install_result.data.decode('utf-8'))
 
     # otherwise, create data source
     api_url = f"https://{workspace_id}.grafana-workspace.{runtime_region}.amazonaws.com/api/datasources"
